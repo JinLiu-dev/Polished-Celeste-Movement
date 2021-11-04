@@ -20,11 +20,14 @@ public class MovementPolish : MonoBehaviour
     public float wallJumpLerp = 10;
     public float dashSpeed = 20;
 
-    public float hangTime = 0;
-    public float coyoteTime = 0.075f;
+    // public float hangTime = 0;
+    // public float coyoteTime = 0.075f;
     public float suqashFactor = 45f;
-    public float jumpBufferTime = 0.045f;
-    private float bufferedTime = -1f;
+    // public float jumpBufferTime = 0.045f;
+    // private float bufferedTime = -1f;
+
+    public float DMcoyoteTime = 0;
+    public float DMcoyoteWall = 0;
 
     [Space]
     [Header("Booleans")]
@@ -63,14 +66,14 @@ public class MovementPolish : MonoBehaviour
     void Update()
     {
         // Squash and Stretch
-        if(rb.velocity.y != 0)
-        {
-            visual.transform.localScale = new Vector3(1f, 1f - rb.velocity.y / suqashFactor, 1f);
-        }
-        else
-        {
-            visual.transform.localScale = new Vector3(1f, 1f , 1f);
-        }
+        // if(rb.velocity.y != 0)
+        // {
+        //     visual.transform.localScale = new Vector3(1f, 1f - rb.velocity.y / suqashFactor, 1f);
+        // }
+        // else
+        // {
+        //     visual.transform.localScale = new Vector3(1f, 1f , 1f);
+        // }
         float x = Input.GetAxis("Horizontal");
         float y = Input.GetAxis("Vertical");
         float xRaw = Input.GetAxisRaw("Horizontal");
@@ -92,21 +95,21 @@ public class MovementPolish : MonoBehaviour
 
         Walk(dir);
         anim.SetHorizontalMovement(x, y, rb.velocity.y);
-        if(!coll.onGround && !coll.onWall)
-        {
-            hangTime += Time.deltaTime;
-        }
-        else
-        {
-            if(hangTime - bufferedTime < jumpBufferTime && coll.onGround)
-            {
-                anim.SetTrigger("jump");
-                Jump(Vector2.up, false);
-                hangTime += coyoteTime;
-                bufferedTime = -1f;
-            }
-            hangTime = 0;
-        }
+        // if(!coll.onGround && !coll.onWall)
+        // {
+        //     hangTime += Time.deltaTime;
+        // }
+        // else
+        // {
+        //     if(hangTime - bufferedTime < jumpBufferTime && coll.onGround)
+        //     {
+        //         anim.SetTrigger("jump");
+        //         Jump(Vector2.up, false);
+        //         hangTime += coyoteTime;
+        //         bufferedTime = -1f;
+        //     }
+        //     hangTime = 0;
+        // }
 
         // if colliding w wall and middle mouse is pressed
         // enter wallgrab start
@@ -174,26 +177,61 @@ public class MovementPolish : MonoBehaviour
             wallSlide = false;
         }
 
+        // if on ground add coyote time
+        if(coll.onGround) {
+            DMcoyoteTime = 30f;
+        }
+
+        if(coll.onWall) {
+            DMcoyoteWall = 30f;
+        }
+
+        // if no more coyete is available, not on the ground, not goingup/jumping, and coyoteTime is 0
+        if(!coll.onGround && DMcoyoteTime > 0f) {
+            DMcoyoteTime -= 1f;
+        }
+
+        if(!coll.onWall && DMcoyoteWall > 0f) {
+            DMcoyoteWall -= 1f;
+        }
+
         // if trigger to jump is pressed jump
         // if on ground jump
         // if on wall walljump
+        // if (Input.GetButtonDown("Jump"))
+        // {
+        //     anim.SetTrigger("jump");
+        //     if(rb.velocity.y < 0)
+        //     {
+        //         bufferedTime = hangTime;
+        //     }
+
+        //     if (coll.onGround  || (hangTime < coyoteTime && hangTime > 0)){
+        //         StopCoroutine(DisableWallSlide(0));
+        //         StartCoroutine(DisableWallSlide(.4f));
+        //         Jump(Vector2.up, false);
+        //         hangTime += coyoteTime;
+        //     }
+
+        //     if (coll.onWall && !coll.onGround)
+        //         WallJump();
+        // }
+
         if (Input.GetButtonDown("Jump"))
         {
             anim.SetTrigger("jump");
-            if(rb.velocity.y < 0)
+
+            if (coll.onGround || DMcoyoteTime > 0f)
             {
-                bufferedTime = hangTime;
-            }
-
-            if (coll.onGround  || (hangTime < coyoteTime && hangTime > 0)){
+                Debug.Log("jumping");
                 StopCoroutine(DisableWallSlide(0));
-                StartCoroutine(DisableWallSlide(.4f));
+                StartCoroutine(DisableWallSlide(.3f));
                 Jump(Vector2.up, false);
-                hangTime += coyoteTime;
             }
-
-            if (coll.onWall && !coll.onGround)
+            if ((coll.onWall || DMcoyoteWall > 0f) && !coll.onGround)
+            {
                 WallJump();
+            }
         }
 
         // if trying to dash and not dashed yet, dash
