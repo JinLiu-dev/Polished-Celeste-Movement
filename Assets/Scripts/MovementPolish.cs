@@ -20,11 +20,11 @@ public class MovementPolish : MonoBehaviour
     public float wallJumpLerp = 10;
     public float dashSpeed = 20;
 
-    // public float hangTime = 0;
+    public float hangTime = 0;
     // public float coyoteTime = 0.075f;
     public float suqashFactor = 45f;
-    // public float jumpBufferTime = 0.045f;
-    // private float bufferedTime = -1f;
+    public float jumpBufferTime = 0.045f;
+    private float bufferedTime = -1f;
 
     public float DMcoyoteTime = 0;
     public float DMcoyoteWall = 0;
@@ -95,21 +95,20 @@ public class MovementPolish : MonoBehaviour
 
         Walk(dir);
         anim.SetHorizontalMovement(x, y, rb.velocity.y);
-        // if(!coll.onGround && !coll.onWall)
-        // {
-        //     hangTime += Time.deltaTime;
-        // }
-        // else
-        // {
-        //     if(hangTime - bufferedTime < jumpBufferTime && coll.onGround)
-        //     {
-        //         anim.SetTrigger("jump");
-        //         Jump(Vector2.up, false);
-        //         hangTime += coyoteTime;
-        //         bufferedTime = -1f;
-        //     }
-        //     hangTime = 0;
-        // }
+        if(!coll.onGround && !coll.onWall)
+        {
+            hangTime += Time.deltaTime;
+        }
+        else
+        {
+            if(hangTime - bufferedTime < jumpBufferTime && coll.onGround)
+            {
+                anim.SetTrigger("jump");
+                Jump(Vector2.up, false);
+                bufferedTime = -1f;
+            }
+            hangTime = 0;
+        }
 
         // if colliding w wall and middle mouse is pressed
         // enter wallgrab start
@@ -201,10 +200,10 @@ public class MovementPolish : MonoBehaviour
         // if (Input.GetButtonDown("Jump"))
         // {
         //     anim.SetTrigger("jump");
-        //     if(rb.velocity.y < 0)
-        //     {
-        //         bufferedTime = hangTime;
-        //     }
+            // if(rb.velocity.y < 0)
+            // {
+            //     bufferedTime = hangTime;
+            // }
 
         //     if (coll.onGround  || (hangTime < coyoteTime && hangTime > 0)){
         //         StopCoroutine(DisableWallSlide(0));
@@ -220,7 +219,10 @@ public class MovementPolish : MonoBehaviour
         if (Input.GetButtonDown("Jump"))
         {
             anim.SetTrigger("jump");
-
+            if(rb.velocity.y < 0)
+            {
+                bufferedTime = hangTime;
+            }
             if (coll.onGround || DMcoyoteTime > 0f)
             {
                 Debug.Log("jumping");

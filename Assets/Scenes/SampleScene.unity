@@ -4645,7 +4645,9 @@ MonoBehaviour:
   slideSpeed: 1
   wallJumpLerp: 5
   dashSpeed: 40
+  hangTime: 0
   suqashFactor: 45
+  jumpBufferTime: 0.002
   DMcoyoteTime: 0
   DMcoyoteWall: 0
   canMove: 1
