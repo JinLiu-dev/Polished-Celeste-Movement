@@ -4481,13 +4481,13 @@ GameObject:
   m_Component:
   - component: {fileID: 213030896}
   - component: {fileID: 213030895}
-  - component: {fileID: 213030894}
   - component: {fileID: 213030902}
   - component: {fileID: 213030897}
   - component: {fileID: 213030900}
   - component: {fileID: 213030901}
   - component: {fileID: 213030898}
   - component: {fileID: 213030899}
+  - component: {fileID: 213030894}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -4495,8 +4495,8 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!70 &213030894
-CapsuleCollider2D:
+--- !u!61 &213030894
+BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -4508,9 +4508,19 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -0.33}
-  m_Size: {x: 0.86, y: 0.82}
-  m_Direction: 0
+  m_Offset: {x: -0.0023729801, y: -0.39211476}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 0.99868155, y: 0.7962239}
+  m_EdgeRadius: 0
 --- !u!50 &213030895
 Rigidbody2D:
   serializedVersion: 4
@@ -28855,7 +28865,6 @@ ParticleSystemRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
-  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
