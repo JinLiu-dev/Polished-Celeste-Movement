@@ -19,6 +19,7 @@ public class MovementPolish : MonoBehaviour
     public float slideSpeed = 5;
     public float wallJumpLerp = 10;
     public float dashSpeed = 20;
+
     public float hangTime = 0;
     public float coyoteTime = 0.075f;
     public float suqashFactor = 45f;
@@ -32,6 +33,8 @@ public class MovementPolish : MonoBehaviour
     public bool wallJumped;
     public bool wallSlide;
     public bool isDashing;
+
+    public bool goingUp;
 
     [Space]
 
@@ -60,56 +63,88 @@ public class MovementPolish : MonoBehaviour
     void Update()
     {
         // Squash and Stretch
-        if(rb.velocity.y != 0){
-          visual.transform.localScale = new Vector3(1f, 1f - rb.velocity.y / suqashFactor, 1f);
-        }else{
-          visual.transform.localScale = new Vector3(1f, 1f , 1f);
+        if(rb.velocity.y != 0)
+        {
+            visual.transform.localScale = new Vector3(1f, 1f - rb.velocity.y / suqashFactor, 1f);
+        }
+        else
+        {
+            visual.transform.localScale = new Vector3(1f, 1f , 1f);
         }
         float x = Input.GetAxis("Horizontal");
         float y = Input.GetAxis("Vertical");
         float xRaw = Input.GetAxisRaw("Horizontal");
         float yRaw = Input.GetAxisRaw("Vertical");
+
+        if(coll.onWall && !coll.onGround && goingUp)
+        {
+            if (x > 0 && coll.onRightWall)
+            {
+                x = 0;
+            }
+            if(x < 0 && !coll.onRightWall)
+            {
+                x = 0;
+            }
+        }
+
         Vector2 dir = new Vector2(x, y);
 
         Walk(dir);
         anim.SetHorizontalMovement(x, y, rb.velocity.y);
-        if(!coll.onGround && !coll.onWall){
-          hangTime += Time.deltaTime;
-        }else{
-          if(hangTime - bufferedTime < jumpBufferTime && coll.onGround){
-            anim.SetTrigger("jump");
-            Jump(Vector2.up, false);
-            hangTime += coyoteTime;
-            bufferedTime = -1f;
-          }
-          hangTime = 0;
+        if(!coll.onGround && !coll.onWall)
+        {
+            hangTime += Time.deltaTime;
+        }
+        else
+        {
+            if(hangTime - bufferedTime < jumpBufferTime && coll.onGround)
+            {
+                anim.SetTrigger("jump");
+                Jump(Vector2.up, false);
+                hangTime += coyoteTime;
+                bufferedTime = -1f;
+            }
+            hangTime = 0;
         }
 
+        // if colliding w wall and middle mouse is pressed
+        // enter wallgrab start
         if (coll.onWall && Input.GetButton("Fire3") && canMove)
         {
             if(side != coll.wallSide)
+            {
                 anim.Flip(side*-1);
+            }
             wallGrab = true;
             wallSlide = false;
         }
 
+        // if you release middle mouse, not on the wall or can't move
+        // set wall variable to false
         if (Input.GetButtonUp("Fire3") || !coll.onWall || !canMove)
         {
             wallGrab = false;
             wallSlide = false;
         }
 
+        // if on the ground and not dashing allow jumping
         if (coll.onGround && !isDashing)
         {
             wallJumped = false;
             GetComponent<BetterJumping>().enabled = true;
         }
 
+        // if wall grab and not dashing
+        // modify movement to only up and down
+        // else set grav to 3
         if (wallGrab && !isDashing)
         {
             rb.gravityScale = 0;
             if(x > .2f || x < -.2f)
-            rb.velocity = new Vector2(rb.velocity.x, 0);
+            {
+                rb.velocity = new Vector2(rb.velocity.x, 0);
+            }
 
             float speedModifier = y > 0 ? .5f : 1;
 
@@ -120,7 +155,10 @@ public class MovementPolish : MonoBehaviour
             rb.gravityScale = 3;
         }
 
-        if(coll.onWall && !coll.onGround)
+        // if on a wall and not on the ground
+        // if not grabbing
+        // then wallsliding
+        if(coll.onWall && !coll.onGround && !goingUp)
         {
             if (x != 0 && !wallGrab)
             {
@@ -129,17 +167,27 @@ public class MovementPolish : MonoBehaviour
             }
         }
 
+        // if not colliding w wall or on ground
+        // wall slide is false
         if (!coll.onWall || coll.onGround)
+        {
             wallSlide = false;
+        }
 
+        // if trigger to jump is pressed jump
+        // if on ground jump
+        // if on wall walljump
         if (Input.GetButtonDown("Jump"))
         {
             anim.SetTrigger("jump");
-            if(rb.velocity.y < 0){
-              bufferedTime = hangTime;
+            if(rb.velocity.y < 0)
+            {
+                bufferedTime = hangTime;
             }
 
             if (coll.onGround  || (hangTime < coyoteTime && hangTime > 0)){
+                StopCoroutine(DisableWallSlide(0));
+                StartCoroutine(DisableWallSlide(.4f));
                 Jump(Vector2.up, false);
                 hangTime += coyoteTime;
             }
@@ -148,18 +196,23 @@ public class MovementPolish : MonoBehaviour
                 WallJump();
         }
 
+        // if trying to dash and not dashed yet, dash
         if (Input.GetButtonDown("Fire1") && !hasDashed)
         {
             if(xRaw != 0 || yRaw != 0)
+            {
                 Dash(xRaw, yRaw);
+            }
         }
 
+        // if touching the ground and the bool is wrong set bool
         if (coll.onGround && !groundTouch)
         {
             GroundTouch();
             groundTouch = true;
         }
 
+        // if not on ground and bool is wrong set bool
         if(!coll.onGround && groundTouch)
         {
             groundTouch = false;
@@ -167,9 +220,11 @@ public class MovementPolish : MonoBehaviour
 
         WallParticle(y);
 
+        // if in a locked direction animation stop here
         if (wallGrab || wallSlide || !canMove)
             return;
 
+        // else make sure direction animation is correct
         if(x > 0)
         {
             side = 1;
@@ -260,10 +315,14 @@ public class MovementPolish : MonoBehaviour
     private void WallSlide()
     {
         if(coll.wallSide != side)
-         anim.Flip(side * -1);
+        {
+            anim.Flip(side * -1);
+        }
 
         if (!canMove)
+        {
             return;
+        }
 
         bool pushingWall = false;
         if((rb.velocity.x > 0 && coll.onRightWall) || (rb.velocity.x < 0 && coll.onLeftWall))
@@ -278,10 +337,14 @@ public class MovementPolish : MonoBehaviour
     private void Walk(Vector2 dir)
     {
         if (!canMove)
+        {
             return;
+        }
 
         if (wallGrab)
+        {
             return;
+        }
 
         if (!wallJumped)
         {
@@ -309,6 +372,14 @@ public class MovementPolish : MonoBehaviour
         canMove = false;
         yield return new WaitForSeconds(time);
         canMove = true;
+    }
+
+    IEnumerator DisableWallSlide(float time)
+    {
+        // Debug.Log("GoingUp");
+        goingUp = true;
+        yield return new WaitForSeconds(time);
+        goingUp = false;
     }
 
     void RigidbodyDrag(float x)
