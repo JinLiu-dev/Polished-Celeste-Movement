@@ -10,6 +10,7 @@ public class MovementPolish : MonoBehaviour
     [HideInInspector]
     public Rigidbody2D rb;
     private AnimationScript anim;
+    private GameObject visual;
 
     [Space]
     [Header("Stats")]
@@ -20,6 +21,7 @@ public class MovementPolish : MonoBehaviour
     public float dashSpeed = 20;
     public float hangTime = 0;
     public float coyoteTime = 0.075f;
+    public float suqashFactor = 45f;
 
     [Space]
     [Header("Booleans")]
@@ -49,11 +51,19 @@ public class MovementPolish : MonoBehaviour
         coll = GetComponent<Collision>();
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponentInChildren<AnimationScript>();
+        visual = GameObject.Find ("Player/Visual");
     }
 
     // Update is called once per frame
     void Update()
     {
+        // Squash and Stretch
+        if(rb.velocity.y != 0){
+          visual.transform.localScale = new Vector3(1f, 1f - rb.velocity.y / suqashFactor, 1f);
+        }else{
+          visual.transform.localScale = new Vector3(1f, 1f , 1f);
+        }
+
         float x = Input.GetAxis("Horizontal");
         float y = Input.GetAxis("Vertical");
         float xRaw = Input.GetAxisRaw("Horizontal");

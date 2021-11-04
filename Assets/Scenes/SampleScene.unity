@@ -4629,11 +4629,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rb: {fileID: 0}
-  speed: 10
-  jumpForce: 50
-  slideSpeed: 5
-  wallJumpLerp: 10
-  dashSpeed: 20
+  speed: 7
+  jumpForce: 12
+  slideSpeed: 1
+  wallJumpLerp: 5
+  dashSpeed: 40
   hangTime: 0
   coyoteTime: 0.075
   canMove: 1
@@ -4659,11 +4659,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rb: {fileID: 0}
-  speed: 10
-  jumpForce: 50
-  slideSpeed: 5
-  wallJumpLerp: 10
-  dashSpeed: 20
+  speed: 7
+  jumpForce: 12
+  slideSpeed: 1
+  wallJumpLerp: 5
+  dashSpeed: 40
   canMove: 1
   wallGrab: 0
   wallJumped: 0
