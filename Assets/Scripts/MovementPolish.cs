@@ -18,6 +18,8 @@ public class MovementPolish : MonoBehaviour
     public float slideSpeed = 5;
     public float wallJumpLerp = 10;
     public float dashSpeed = 20;
+    public float hangTime = 0;
+    public float coyoteTime = 0.075f;
 
     [Space]
     [Header("Booleans")]
@@ -60,6 +62,11 @@ public class MovementPolish : MonoBehaviour
 
         Walk(dir);
         anim.SetHorizontalMovement(x, y, rb.velocity.y);
+        if(!coll.onGround && !coll.onWall){
+          hangTime += Time.deltaTime;
+        }else{
+          hangTime = 0;
+        }
 
         if (coll.onWall && Input.GetButton("Fire3") && canMove)
         {
@@ -80,7 +87,7 @@ public class MovementPolish : MonoBehaviour
             wallJumped = false;
             GetComponent<BetterJumping>().enabled = true;
         }
-        
+
         if (wallGrab && !isDashing)
         {
             rb.gravityScale = 0;
@@ -112,8 +119,11 @@ public class MovementPolish : MonoBehaviour
         {
             anim.SetTrigger("jump");
 
-            if (coll.onGround)
+            if (coll.onGround  || (hangTime < coyoteTime && hangTime > 0)){
                 Jump(Vector2.up, false);
+                hangTime += coyoteTime;
+            }
+
             if (coll.onWall && !coll.onGround)
                 WallJump();
         }
