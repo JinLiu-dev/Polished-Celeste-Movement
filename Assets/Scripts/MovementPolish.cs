@@ -22,6 +22,8 @@ public class MovementPolish : MonoBehaviour
     public float hangTime = 0;
     public float coyoteTime = 0.075f;
     public float suqashFactor = 45f;
+    public float jumpBufferTime = 0.045f;
+    private float bufferedTime = -1f;
 
     [Space]
     [Header("Booleans")]
@@ -63,7 +65,6 @@ public class MovementPolish : MonoBehaviour
         }else{
           visual.transform.localScale = new Vector3(1f, 1f , 1f);
         }
-
         float x = Input.GetAxis("Horizontal");
         float y = Input.GetAxis("Vertical");
         float xRaw = Input.GetAxisRaw("Horizontal");
@@ -75,6 +76,12 @@ public class MovementPolish : MonoBehaviour
         if(!coll.onGround && !coll.onWall){
           hangTime += Time.deltaTime;
         }else{
+          if(hangTime - bufferedTime < jumpBufferTime && coll.onGround){
+            anim.SetTrigger("jump");
+            Jump(Vector2.up, false);
+            hangTime += coyoteTime;
+            bufferedTime = -1f;
+          }
           hangTime = 0;
         }
 
@@ -128,6 +135,9 @@ public class MovementPolish : MonoBehaviour
         if (Input.GetButtonDown("Jump"))
         {
             anim.SetTrigger("jump");
+            if(rb.velocity.y < 0){
+              bufferedTime = hangTime;
+            }
 
             if (coll.onGround  || (hangTime < coyoteTime && hangTime > 0)){
                 Jump(Vector2.up, false);

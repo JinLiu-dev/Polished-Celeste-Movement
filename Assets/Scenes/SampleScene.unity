@@ -4557,7 +4557,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 213030893}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3286969c5df8a1e4bb64bc92ea46495e, type: 3}
   m_Name: 
@@ -4623,7 +4623,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 213030893}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 928444eaf0036d146a44935ecf77f571, type: 3}
   m_Name: 
@@ -4636,6 +4636,8 @@ MonoBehaviour:
   dashSpeed: 40
   hangTime: 0
   coyoteTime: 0.075
+  suqashFactor: 45
+  jumpBufferTime: 0.045
   canMove: 1
   wallGrab: 0
   wallJumped: 0
@@ -4681,7 +4683,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 213030893}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3a1e6b17775ed4b41971eba66252fa1c, type: 3}
   m_Name: 
