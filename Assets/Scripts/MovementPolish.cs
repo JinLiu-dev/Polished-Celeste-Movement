@@ -65,15 +65,15 @@ public class MovementPolish : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // Squash and Stretch
-        // if(rb.velocity.y != 0)
-        // {
-        //     visual.transform.localScale = new Vector3(1f, 1f - rb.velocity.y / suqashFactor, 1f);
-        // }
-        // else
-        // {
-        //     visual.transform.localScale = new Vector3(1f, 1f , 1f);
-        // }
+        //Squash and Stretch
+        if(rb.velocity.y != 0)
+        {
+            visual.transform.localScale = new Vector3(1f, 1f - rb.velocity.y / suqashFactor, 1f);
+        }
+        else
+        {
+            visual.transform.localScale = new Vector3(1f, 1f , 1f);
+        }
         float x = Input.GetAxis("Horizontal");
         float y = Input.GetAxis("Vertical");
         float xRaw = Input.GetAxisRaw("Horizontal");
