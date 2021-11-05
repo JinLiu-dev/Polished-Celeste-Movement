@@ -14,11 +14,11 @@ public class MovementPolish : MonoBehaviour
 
     [Space]
     [Header("Stats")]
-    public float speed = 10;
-    public float jumpForce = 50;
-    public float slideSpeed = 5;
-    public float wallJumpLerp = 10;
-    public float dashSpeed = 20;
+    public float speed = 7;
+    public float jumpForce = 12;
+    public float slideSpeed = 1;
+    public float wallJumpLerp = 5;
+    public float dashSpeed = 40;
 
     public float hangTime = 0;
     // public float coyoteTime = 0.075f;
@@ -92,6 +92,12 @@ public class MovementPolish : MonoBehaviour
             }
         }
 
+        if(goingUp)
+        {
+            DMcoyoteTime = 0;
+            DMcoyoteWall = 0;
+        }
+
         Vector2 dir = new Vector2(x, y);
         Vector2 rawdir = new Vector2(xRaw, yRaw);
 
@@ -136,6 +142,7 @@ public class MovementPolish : MonoBehaviour
         if (coll.onGround && !isDashing)
         {
             wallJumped = false;
+            GetComponent<FloatyJumping>().enabled = false;
             GetComponent<BetterJumping>().enabled = true;
         }
         if (coll.onWall && isDashing && dashY == 0)
@@ -188,7 +195,7 @@ public class MovementPolish : MonoBehaviour
         }
 
         if(coll.onWall) {
-            DMcoyoteWall = 30f;
+            DMcoyoteWall = 10f;
         }
 
         // if no more coyete is available, not on the ground, not goingup/jumping, and coyoteTime is 0
@@ -229,15 +236,18 @@ public class MovementPolish : MonoBehaviour
             {
                 bufferedTime = hangTime;
             }
-            if (coll.onGround || DMcoyoteTime > 0f)
+            if ((coll.onGround || DMcoyoteTime > 0f)&& !goingUp)
             {
                 Debug.Log("jumping");
                 StopCoroutine(DisableWallSlide(0));
                 StartCoroutine(DisableWallSlide(.3f));
                 Jump(Vector2.up, false);
+                DMcoyoteTime = 0f;
             }
             if ((coll.onWall || DMcoyoteWall > 0f) && !coll.onGround)
             {
+                StopCoroutine(DisableWallSlide(0));
+                StartCoroutine(DisableWallSlide(.3f));
                 WallJump();
             }
         }

@@ -78,6 +78,7 @@ public class Movement : MonoBehaviour
         if (coll.onGround && !isDashing)
         {
             wallJumped = false;
+            GetComponent<FloatyJumping>().enabled = false;
             GetComponent<BetterJumping>().enabled = true;
         }
         

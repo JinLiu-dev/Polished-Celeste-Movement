@@ -4489,6 +4489,7 @@ GameObject:
   - component: {fileID: 213030899}
   - component: {fileID: 213030894}
   - component: {fileID: 213030903}
+  - component: {fileID: 213030904}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -4675,16 +4676,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rb: {fileID: 0}
-  speed: 7
-  jumpForce: 12
-  slideSpeed: 1
-  wallJumpLerp: 5
-  dashSpeed: 40
+  speed: 5
+  jumpForce: 15
+  slideSpeed: 2
+  wallJumpLerp: 10
+  dashSpeed: 30
+  hangTime: 0
+  suqashFactor: 45
+  jumpBufferTime: 0.045
+  bufferedTime: -1
+  DMcoyoteTime: 0
+  DMcoyoteWall: 0
   canMove: 1
   wallGrab: 0
   wallJumped: 0
   wallSlide: 0
   isDashing: 0
+  goingUp: 0
   side: 1
   dashParticle: {fileID: 786101203}
   jumpParticle: {fileID: 708599380}
@@ -4719,6 +4727,20 @@ CapsuleCollider2D:
   m_Offset: {x: 0, y: -0.33}
   m_Size: {x: 0.86, y: 0.82}
   m_Direction: 0
+--- !u!114 &213030904
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 213030893}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c13c10e1a3cf4d4180f59dc420e29ee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fallMultiplier: 0.00001
+  lowJumpMultiplier: 0.00001
 --- !u!1 &234361388
 GameObject:
   m_ObjectHideFlags: 0
