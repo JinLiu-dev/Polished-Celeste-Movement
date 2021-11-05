@@ -28,6 +28,7 @@ public class MovementPolish : MonoBehaviour
 
     public float DMcoyoteTime = 0;
     public float DMcoyoteWall = 0;
+    private float dashY = 0;
 
     [Space]
     [Header("Booleans")]
@@ -102,7 +103,6 @@ public class MovementPolish : MonoBehaviour
         }
         else
         {
-            Debug.Log(hangTime - bufferedTime);
             if(((hangTime - bufferedTime) < jumpBufferTime) && coll.onGround)
             {
                 anim.SetTrigger("jump");
@@ -137,6 +137,10 @@ public class MovementPolish : MonoBehaviour
         {
             wallJumped = false;
             GetComponent<BetterJumping>().enabled = true;
+        }
+        if (coll.onWall && isDashing && dashY == 0)
+        {
+            rb.velocity += new Vector2(0, dashSpeed / 2);
         }
 
         // if wall grab and not dashing
@@ -243,6 +247,7 @@ public class MovementPolish : MonoBehaviour
         {
             if(xRaw != 0 || yRaw != 0)
             {
+                dashY = yRaw;
                 Dash(xRaw, yRaw);
             }
         }
