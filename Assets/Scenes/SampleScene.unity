@@ -4647,7 +4647,8 @@ MonoBehaviour:
   dashSpeed: 40
   hangTime: 0
   suqashFactor: 45
-  jumpBufferTime: 0.002
+  jumpBufferTime: 0.1
+  bufferedTime: -1
   DMcoyoteTime: 0
   DMcoyoteWall: 0
   canMove: 1

@@ -24,7 +24,7 @@ public class MovementPolish : MonoBehaviour
     // public float coyoteTime = 0.075f;
     public float suqashFactor = 45f;
     public float jumpBufferTime = 0.045f;
-    private float bufferedTime = -1f;
+    public float bufferedTime = -1f;
 
     public float DMcoyoteTime = 0;
     public float DMcoyoteWall = 0;
@@ -92,8 +92,9 @@ public class MovementPolish : MonoBehaviour
         }
 
         Vector2 dir = new Vector2(x, y);
+        Vector2 rawdir = new Vector2(xRaw, yRaw);
 
-        Walk(dir);
+        Walk(dir, rawdir);
         anim.SetHorizontalMovement(x, y, rb.velocity.y);
         if(!coll.onGround && !coll.onWall)
         {
@@ -101,12 +102,13 @@ public class MovementPolish : MonoBehaviour
         }
         else
         {
-            if(hangTime - bufferedTime < jumpBufferTime && coll.onGround)
+            Debug.Log(hangTime - bufferedTime);
+            if(((hangTime - bufferedTime) < jumpBufferTime) && coll.onGround)
             {
                 anim.SetTrigger("jump");
                 Jump(Vector2.up, false);
-                bufferedTime = -1f;
             }
+            bufferedTime = -1f;
             hangTime = 0;
         }
 
@@ -374,7 +376,7 @@ public class MovementPolish : MonoBehaviour
         rb.velocity = new Vector2(push, -slideSpeed);
     }
 
-    private void Walk(Vector2 dir)
+    private void Walk(Vector2 dir, Vector2 rawdir)
     {
         if (!canMove)
         {
@@ -388,7 +390,12 @@ public class MovementPolish : MonoBehaviour
 
         if (!wallJumped)
         {
+            if(rb.velocity.x > 0 && rawdir.x < 0
+              || rb.velocity.x < 0 && rawdir.x > 0 ){
+              rb.velocity = new Vector2(0, rb.velocity.y);
+            }
             rb.velocity = new Vector2(dir.x * speed, rb.velocity.y);
+
         }
         else
         {
