@@ -238,7 +238,7 @@ public class MovementDistinct : MonoBehaviour
             }
             if (coll.onGround || DMcoyoteTime > 0f)
             {
-                Debug.Log("jumping");
+                //Debug.Log("jumping");
                 StopCoroutine(DisableWallSlide(0));
                 StartCoroutine(DisableWallSlide(.3f));
                 Jump(Vector2.up, false);
